@@ -9,10 +9,6 @@ jobs:
   run-happy-flow:
     runs-on: self-hosted
 
-    env:
-      DOTNET_ROOT: ${{ github.workspace }}\.dotnet
-      PATH: ${{ github.workspace }}\.dotnet;$PATH
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
