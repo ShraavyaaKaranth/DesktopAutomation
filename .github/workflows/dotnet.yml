@@ -1,27 +1,28 @@
-name: Run Desktop Automation
+name: Run Happy Flow Scenario
 
 on:
   push:
-    branches: master
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  desktop-test:
-    runs-on: [self-hosted, windows]
+  run-happy-flow:
+    runs-on: self-hosted
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.0.x'
 
-      - name: Build
-        run: dotnet build
+      - name: Restore dependencies
+        run: dotnet restore
 
-      - name: Start WinAppDriver
-        run: |
-          Start-Process "C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
+      - name: Build solution
+        run: dotnet build --no-restore --configuration Release
 
-      - name: Run Tests
-        run: dotnet test
+      - name: Run HappyFlow.feature
+        run: dotnet test --no-build --filter "TestCategory=happyFlow"
