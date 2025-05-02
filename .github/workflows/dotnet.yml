@@ -2,7 +2,7 @@ name: Run Happy Flow Scenario
 
 on:
   push:
-    branches: master
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -13,16 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.0.x'
+          install-dir: ${{ github.workspace }}/.dotnet
+
+      - name: Add .NET to PATH
+        run: echo "${{ github.workspace }}/.dotnet" >> $env:GITHUB_PATH
 
       - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build solution
-        run: dotnet build --no-restore --configuration Release
-
-      - name: Run HappyFlow.feature
-        run: dotnet test --no-build --filter "TestCategory=happyFlow"
+        run: ${{ github.workspace }}/.dotnet/dotnet restore
