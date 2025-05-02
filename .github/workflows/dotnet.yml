@@ -10,17 +10,17 @@ jobs:
     runs-on: self-hosted
 
     env:
-      DOTNET_ROOT: ${{ github.workspace }}/.dotnet
-      PATH: ${{ github.workspace }}/.dotnet:$PATH
+      DOTNET_ROOT: ${{ github.workspace }}\.dotnet
+      PATH: ${{ github.workspace }}\.dotnet;$PATH
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET SDK
+      - name: Install .NET SDK 6.0
         run: |
           curl -sSL https://dot.net/v1/dotnet-install.ps1 -o dotnet-install.ps1
-          powershell -ExecutionPolicy Bypass -File ./dotnet-install.ps1 -Version 6.0.416 -InstallDir "$env:GITHUB_WORKSPACE\.dotnet"
+          powershell -ExecutionPolicy Bypass -File ./dotnet-install.ps1 -Version 6.0.416 -InstallDir "${{ github.workspace }}\.dotnet"
 
       - name: Restore dependencies
         run: .\.dotnet\dotnet.exe restore
@@ -28,6 +28,5 @@ jobs:
       - name: Build solution
         run: .\.dotnet\dotnet.exe build --no-restore --configuration Release
 
-      - name: Run HappyFlow.feature
+      - name: Run HappyFlow.feature (TestCategory=happyFlow)
         run: .\.dotnet\dotnet.exe test --no-build --filter "TestCategory=happyFlow"
-
